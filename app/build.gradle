@@ -19,5 +19,7 @@ android {
 }
 
 dependencies {
+    compile 'com.alibaba:fastjson:1.2.12'
     compile 'com.android.support:support-v4:19.1.0'
+    //    compile files('F:/study/workspace/as/breezeWeather/libs/fastjson-1.2.12.jar')
 }

@@ -1,36 +1,29 @@
 package com.atenklsy.breezeWeather.model;
+
+import java.io.Serializable;
+
 /**
  * Province实体类
- * @author atenklsy
  *
+ * @author atenklsy
  */
-public class Province {
-	private int id;
-	private String provinceName;
-	private String provinceCode;
+public class Province implements Serializable {
+    private int proId;
+    private String proName;
 
-	public int getId() {
-		return id;
-	}
+    public int getProId() {
+        return proId;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setProId(int proId) {
+        this.proId = proId;
+    }
 
-	public String getProvinceName() {
-		return provinceName;
-	}
+    public String getProName() {
+        return proName;
+    }
 
-	public void setProvinceName(String provinceName) {
-		this.provinceName = provinceName;
-	}
-
-	public String getProvinceCode() {
-		return provinceCode;
-	}
-
-	public void setProvinceCode(String provinceCode) {
-		this.provinceCode = provinceCode;
-	}
-
+    public void setProName(String proName) {
+        this.proName = proName;
+    }
 }

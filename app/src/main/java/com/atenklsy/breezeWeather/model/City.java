@@ -1,5 +1,7 @@
 package com.atenklsy.breezeWeather.model;
 
+import java.io.Serializable;
+
 /**
  * City实体类
  *
@@ -7,18 +9,26 @@ package com.atenklsy.breezeWeather.model;
  */
 
 
-public class City {
-    private int id;
-    private String cityName;
-    private String cityCode;
-    private int provinceId;
+public class City implements Serializable{
 
-    public int getId() {
-        return id;
+    private int proId;
+    private int cityId;
+    private String cityName;
+
+    public int getProId() {
+        return proId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setProId(int proId) {
+        this.proId = proId;
+    }
+
+    public int getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(int cityId) {
+        this.cityId = cityId;
     }
 
     public String getCityName() {
@@ -28,21 +38,4 @@ public class City {
     public void setCityName(String cityName) {
         this.cityName = cityName;
     }
-
-    public String getCityCode() {
-        return cityCode;
-    }
-
-    public void setCityCode(String cityCode) {
-        this.cityCode = cityCode;
-    }
-
-    public int getProvinceId() {
-        return provinceId;
-    }
-
-    public void setProvinceId(int provinceId) {
-        this.provinceId = provinceId;
-    }
-
 }

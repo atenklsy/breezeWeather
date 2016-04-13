@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#000">
+
+        <Button
+            android:id="@+id/btnChooseArea"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/home"
+            android:padding="10dp" />
+
+        <TextView
+            android:id="@+id/tvCounty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="北京"
+            android:textColor="#fff"
+            android:textSize="22sp" />
+
+        <Button
+            android:id="@+id/btnRefreshWeather"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/refresh"
+            android:padding="10dp" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tvRefreshTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_margin="15dp"
+        android:text="今天18:00发布"
+        android:textSize="22sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_vertical|center_horizontal"
+        android:orientation="vertical"
+        android:padding="30dp">
+
+        <TextView
+            android:id="@+id/tvCurrentDay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="2015年12月29日"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/tvCurrentText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="小雨转中雨"
+            android:textSize="38dp" />
+
+        <TextView
+            android:id="@+id/tvCurrentTemp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3℃-6℃"
+            android:textSize="38dp" />
+    </LinearLayout>
+
+</LinearLayout>
