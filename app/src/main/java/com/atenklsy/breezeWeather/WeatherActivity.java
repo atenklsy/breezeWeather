@@ -10,18 +10,37 @@ package com.atenklsy.breezeWeather;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.preference.PreferenceManager;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.atenklsy.breezeWeather.api.Constant;
+import com.atenklsy.breezeWeather.util.HttpUtil;
 import com.atenklsy.breezeWeather.util.Utility;
 
 public class WeatherActivity extends Activity implements View.OnClickListener {
     Button btnChooseArea, btnRefreshWeather;
     TextView tvCounty, tvRefreshTime, tvCurrentDay, tvCurrentTemp, tvCurrentText;
     Intent getWeatherIntent;
+    String cityName, address;
+    SharedPreferences sp;
+    private Handler showWeatherHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+//           在主界面显示天气
+            showWeather();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +48,6 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_weather);
         initView();
-        initData();
     }
 
     private void initView() {
@@ -47,16 +65,9 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         btnChooseArea = (Button) findViewById(R.id.btnChooseArea);
         //手动更新天气
         btnRefreshWeather = (Button) findViewById(R.id.btnRefreshWeather);
-    }
-
-    private void initData() {
-//        tvCounty.setText();
-//        tvRefreshTime.setText();
-//        tvCurrentDay.setText();
-//        tvCurrentTemp.setText();
-//        tvCurrentText.setText();
         btnChooseArea.setOnClickListener(this);
         btnRefreshWeather.setOnClickListener(this);
+        initData();
     }
 
     @Override
@@ -64,28 +75,94 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.btnChooseArea:
                 getWeatherIntent = new Intent(WeatherActivity.this, ChooseAreaActivity.class);
-                //选择之后，会返回数据
-                startActivityForResult(getWeatherIntent, 0);
+//                startActivityForResult(getWeatherIntent, 0);
+                startActivity(getWeatherIntent);
                 break;
-
             case R.id.btnRefreshWeather:
-                //手动更新天气
-                String curTime = Utility.getCurTime();
+                //再请求一次网络？
                 break;
 
         }
 
+    }
+
+    void initData() {
+
+        cityName = WeatherActivity.this.getIntent().getStringExtra("cityName");
+        Toast.makeText(this, cityName, Toast.LENGTH_LONG).show();
+        requestDataFromAddress(cityName);
+
+    }
+
+    private void requestDataFromAddress(final String mCityName) {
+        if (!TextUtils.isEmpty(cityName)) {
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    address = Constant.REQUESTINFO + mCityName + Constant.KEY;
+                    //请求网络数据
+                    HttpUtil.sendHttpRequest(address, new HttpUtil.HttpCallbackListener() {
+                        //获取网络数据成功
+                        @Override
+                        public void onFinish(String response) {
+                            Log.d("atenklsy", "请求到网络数据了" + response);
+                            //调用解析数据的方法
+                            //处理数据1.handleMessage（解析，并存入Prefence）
+                            Utility.parseData(response, WeatherActivity.this);
+                            // Message weatherMsg = showWeatherHandler.obtainMessage();
+                            showWeatherHandler.sendEmptyMessage(0);
+
+
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Log.d("atenklsy", "请求数据出错了！");
+                            e.printStackTrace();
+                        }
+                    });
+                }
+            }).start();
+
+        } else {
+            //从之前的数据里面取数数据然后放上去
+//            查询北京的天气
+            showWeather();
+        }
     }
 
     /**
-     * //从ChooseAreaActivity返回天气数据
+     * 将2016-1-1转成2016年1月1日
      */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (requestCode == resultCode) {
-//           Weather weatherInfo =  data.getExtras("weatherInfo");
-        }
-        super.onActivityResult(requestCode, resultCode, data);
+    private String handleLocTime(String locDay) {
+        String[] realTime = locDay.split("\\-");
+        //将2016-1-1分成2016,1,1三个字符串存入数组
+        String year = realTime[0];
+        String month = realTime[1];
+        String day = realTime[2];
+        String castDay = year + "年" + month + "月" + day + "日";
+        return castDay;
     }
+
+    /**
+     * 显示天气数据
+     */
+
+    private void showWeather() {
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
+        //将日期分割开来，空格分隔符：\\s+
+        String[] loc = sp.getString("loc", "").split("\\s+");
+        //日期
+        String locDay = loc[0];
+        //时间
+        String locTime = loc[1];
+        String castDay = handleLocTime(locDay);
+        tvCounty.setText(sp.getString("city", ""));
+        tvRefreshTime.setText("更新时间:" + locTime);
+        tvCurrentDay.setText(castDay);
+        tvCurrentTemp.setText(sp.getString("tmp", "") + "℃");
+        tvCurrentText.setText(sp.getString("txt", ""));
+    }
+
 }

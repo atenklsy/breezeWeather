@@ -10,16 +10,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
-import com.atenklsy.breezeWeather.api.Constant;
 import com.atenklsy.breezeWeather.db.DBManager;
 import com.atenklsy.breezeWeather.db.breezeWeatherDB;
 import com.atenklsy.breezeWeather.model.City;
 import com.atenklsy.breezeWeather.model.Province;
 import com.atenklsy.breezeWeather.model.weather.Weather;
-import com.atenklsy.breezeWeather.util.HttpUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,16 +66,13 @@ public class ChooseAreaActivity extends Activity {
                 } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(position);
                     String newName = replaceCityName(selectedCity.getCityName());
-                    queryFromServer(newName);
-                    Toast.makeText(getApplication(), newName, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplication(), newName, Toast.LENGTH_SHORT).show();
                     //将数据传给WeatherActivity
                     Intent weatherIntent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
-                    weatherIntent.putExtra("weatherInfo", weatherInfo);
-//                    intent.putExtra();
-//                    startActivity(weatherIntent);
-                    setResult(1, weatherIntent);
-                    //setResult(weatherIntent,0);
-
+                    weatherIntent.putExtra("cityName", newName);
+//                    setResult(RESULT_OK, weatherIntent);
+                    startActivity(weatherIntent);
+                    finish();
                 }
             }
         });
@@ -127,49 +120,6 @@ public class ChooseAreaActivity extends Activity {
         }
         titleText.setText(replaceCityName(selectedProvince.getProName()));
     }
-
-    public void queryFromServer(String newName) {
-        //当前城市的address由城市名+key组成
-        String address = Constant.REQUESTINFO + newName + Constant.KEY;
-        //请求网络数据
-        HttpUtil.sendHttpRequest(address, new HttpUtil.HttpCallbackListener() {
-            //获取网络数据成功
-            @Override
-            public void onFinish(String response) {
-                Log.d("atenklsy", "请求到网络数据了" + response);
-                //调用解析数据的方法
-//                Utility.parseData(response);
-                parseData(response);
-            }
-
-            //获取网络数据失败
-            @Override
-            public void onError(Exception e) {
-                Log.d("atenklsy", "请求数据出错了！");
-                e.printStackTrace();
-            }
-        });
-    }
-
-    //专门的解析数据方法
-    private void parseData(String response) {
-        Weather weatherInfo = null;
-//        Gson gson = new Gson();
-//        weatherInfo = gson.fromJson(response, Weather.class);
-        weatherInfo = JSON.parseObject(response, Weather.class);
-        Log.d("atenklsy", "我的weatherInfo如下" + weatherInfo);
-        if (weatherInfo.getStatus() != null) {
-            //如果状态值为不为空，则解析数据正常
-            Log.d("atenklsy", "解析结果2" + weatherInfo.getStatus());
-
-        } else {
-            //如果状态只为空，则解析数据出错
-            Log.d("ateknlsy", "Status==null!!!!!!");
-        }
-
-
-    }
-
 
 //    private void queryCounties() {
 //        countyList = mbreezeWeatherDB.loadCounties(selectedCity.getId());
