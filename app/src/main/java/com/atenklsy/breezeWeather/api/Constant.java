@@ -11,9 +11,8 @@ public class Constant {
     public final static String HOST = "https://api.heweather.com/x3/";
     //按照cityid来获取相应城市的天气情况
     public final static String WEATHERINFO = "weather?city=";
-    //和风天气的专属KEY
+    //和风天气的专属KEY。
     public final static String KEY = "&key=ab7216b8c079499589ade737059fb662";
     public final static String REQUESTINFO = HOST + WEATHERINFO;
-
 
 }
